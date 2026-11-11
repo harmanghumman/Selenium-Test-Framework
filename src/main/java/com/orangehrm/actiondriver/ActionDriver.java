@@ -65,10 +65,10 @@ public class ActionDriver {
 			waitForElementToBeVisible(by);
 			String actualText = driver.findElement(by).getText();
 			if (expectedText.equals(actualText)) {
-				System.out.println("Text are matching: " + actualText + "equals" + expectedText);
+				System.out.println("Text are matching: " + actualText + " equals " + expectedText);
 				return true;
 			} else {
-				System.out.println("Text are  not matching: " + actualText + "not equals" + expectedText);
+				System.out.println("Text are  not matching: " + actualText + " not equals " + expectedText);
 
 				return false;
 			}
@@ -76,7 +76,7 @@ public class ActionDriver {
 			// TODO Auto-generated catch block
 		}
 		return false;
-		
+
 	}
 
 	// Method to check if an element is displayed

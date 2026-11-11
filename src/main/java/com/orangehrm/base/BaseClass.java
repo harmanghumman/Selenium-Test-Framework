@@ -1,5 +1,6 @@
 package com.orangehrm.base;
 
+import java.awt.SystemColor;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Duration;
@@ -15,10 +16,13 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 
+import com.orangehrm.actiondriver.ActionDriver;
+
 public class BaseClass {
 
 	protected static Properties prop;
-	protected WebDriver driver;
+	protected static WebDriver driver;
+	private static ActionDriver actionDriver;
 
 	@BeforeSuite
 	public void loadConfig() throws IOException {
@@ -37,6 +41,12 @@ public class BaseClass {
 		launchBrowser();
 		configureBrowser();
 		staticWait(2);
+
+		// Initialize the actiondriver only once
+		if (actionDriver == null) {
+			actionDriver = new ActionDriver(driver);
+			System.out.println("ActionDriver instance is created.");
+		}
 
 	}
 
@@ -57,7 +67,8 @@ public class BaseClass {
 		}
 	}
 
-	//Configure browser settings such as implicit wait, maximize the browser and navigate to the url
+	// Configure browser settings such as implicit wait, maximize the browser and
+	// navigate to the url
 	public void configureBrowser() {
 		// Implicit Wait
 		int implicitWait = Integer.parseInt(prop.getProperty("implicitWait"));
@@ -84,20 +95,45 @@ public class BaseClass {
 				System.out.println("Unable to Quit the Driver:" + e.getMessage());
 			}
 		}
+		System.out.println("Webdriver instance is closed.");
+		driver = null;
+		actionDriver = null;
+
+	}
+
+	
+//
+//	//Driver getter method
+//	public WebDriver getDriver() {
+//		return driver;
+//	}
+
+	// Getter Method for webdriver
+	public static WebDriver getDriver() {
+		if (driver == null) {
+			System.out.println("WebDriver is not initialized");
+			throw new IllegalStateException("WebDriver is not initialized");
+		}
+		return driver;
+
+	}
+
+	// Getter Method for Actiondriver
+	public static ActionDriver getactionDriver() {
+		if (actionDriver == null) {
+			System.out.println("ActionDriver is not initialized");
+			throw new IllegalStateException("ActionDriver is not initialized");
+		}
+		return actionDriver;
 
 	}
 	
-	//Getter method for prop
-	public static Properties getProp() {
-		return prop; 
-	}
+	// Getter method for prop
+		public static Properties getProp() {
+			return prop;
+		}
 
-	//Driver getter method
-	public WebDriver getDriver() {
-		return driver;
-	}
-
-	//Driver setter method
+	// Driver setter method
 	public void setDriver(WebDriver driver) {
 		this.driver = driver;
 

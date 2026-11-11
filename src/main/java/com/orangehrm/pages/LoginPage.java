@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import com.orangehrm.actiondriver.ActionDriver;
+import com.orangehrm.base.BaseClass;
 
 public class LoginPage {
 
@@ -15,8 +16,12 @@ public class LoginPage {
 	private By loginButton = By.xpath("//*[@id=\"app\"]/div[1]/div/div[1]/div/div[2]/div[2]/form/div[3]/button");
 	private By errorMessage = By.xpath("//p[text()='Invalid credentials']");
 	
+//	public LoginPage(WebDriver driver) {
+//		this.actionDriver = new ActionDriver(driver);
+//	}
+	
 	public LoginPage(WebDriver driver) {
-		this.actionDriver = new ActionDriver(driver);
+		this.actionDriver = BaseClass.getactionDriver();
 	}
 
 	// Method to perform login

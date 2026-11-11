@@ -28,7 +28,7 @@ public class LoginPageTest extends BaseClass {
 		staticWait(2);
 
 	}
-	
+
 	@Test
 	public void inValidLoginTest() {
 		loginPage.login("admin", "abcde");
@@ -36,10 +36,4 @@ public class LoginPageTest extends BaseClass {
 		Assert.assertTrue(loginPage.verifyErrorMessage(expectedErrorMessage), "Test Faild: Invalid Error Message");
 	}
 
-	
-	
-	
-	
-	
-	
 }

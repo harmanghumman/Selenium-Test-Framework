@@ -1,37 +1,70 @@
-package com.orangehrm.pages;
+# SELENIUM ORANGEHRM PROJECT – DAILY GIT COMMANDS
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+GitHub Repository:
+https://github.com/Harman-cr7/Selenium-Test-Framework
 
-import com.orangehrm.actiondriver.ActionDriver;
+Project Folder:
+C:\Users\harma\eclipse-workspace\OrangeHRMProject
 
-public class HomePage {
-	private ActionDriver actionDriver;
+Branch: main
 
-	// Define locators using By class
-	private By adminTab = By.xpath("//span[text()='Admin']");
-	private By userIDButton = By.className("oxd-userdropdown-name");
-	private By logoutButton = By.xpath("//a[text()='Logout']");
-	private By orangeHRMLogo = By.xpath("//*[@id=\"app\"]/div[1]/div[1]/aside/nav/div[1]/a/div[2]/img");
+--------------------------------------------
 
-	public HomePage(WebDriver driver) {
-		this.actionDriver = new ActionDriver(driver);
-	}
+STEP 1 – Open Git Bash and navigate to project
 
-	// Method to verify Admin tab is visible
-	public boolean isAdminTabVisible() {
-		return actionDriver.isDisplayed(adminTab);
-	}
+cd ~/eclipse-workspace/OrangeHRMProject
 
-	public boolean verifyOrangeHRMlogo() {
-		return actionDriver.isDisplayed(orangeHRMLogo);
-	}
+STEP 2 – Check changed files
 
-	// Method to perform logout operations
-	public void logout() {
-		actionDriver.click(userIDButton);
-		actionDriver.click(logoutButton);
+git status
 
-	}
+STEP 3 – Add all new and modified files
 
-}
+git add .
+
+STEP 4 – Commit your changes
+
+git commit -m "Describe your changes here"
+
+Example:
+git commit -m "Add login page automation"
+
+STEP 5 – Upload changes to GitHub
+
+git push
+
+--------------------------------------------
+
+IMPORTANT NOTES:
+
+1. Always open Git Bash inside your OrangeHRMProject folder or use the cd command above.
+2. Run git status before adding files.
+3. Write a meaningful commit message.
+4. Run git push after committing.
+5. Do not run git init again.
+6. Do not run git remote add origin again.
+7. Do not run git push -u origin main again during normal daily work.
+
+--------------------------------------------
+
+YOUR DAILY WORKFLOW:
+
+CODE → TEST → GIT STATUS → GIT ADD → GIT COMMIT → GIT PUSH
+
+--------------------------------------------
+
+IF YOU WANT TO CHECK YOUR LATEST COMMIT:
+
+git log -1
+
+IF YOU WANT TO CHECK YOUR GITHUB CONNECTION:
+
+git remote -v
+
+--------------------------------------------
+
+REMEMBER:
+
+Your local branch is MAIN.
+Your GitHub remote is ORIGIN.
+Your GitHub repository is Selenium-Test-Framework.
