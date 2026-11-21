@@ -21,8 +21,11 @@ import com.orangehrm.actiondriver.ActionDriver;
 public class BaseClass {
 
 	protected static Properties prop;
-	protected static WebDriver driver;
-	private static ActionDriver actionDriver;
+//	protected static WebDriver driver;
+//	private static ActionDriver actionDriver;
+
+	private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+	private static ThreadLocal<ActionDriver> actionDriver = new ThreadLocal<>();
 
 	@BeforeSuite
 	public void loadConfig() throws IOException {
@@ -35,7 +38,8 @@ public class BaseClass {
 	}
 
 	@BeforeMethod
-	public void setup() {
+	// Synchronized method so that only one thread can use this method at a time.
+	public synchronized void setup() {
 		// Give Name of the class
 		System.out.println("Setting up webDriver for:" + this.getClass().getSimpleName());
 		launchBrowser();
@@ -43,25 +47,29 @@ public class BaseClass {
 		staticWait(2);
 
 		// Initialize the actiondriver only once
-		if (actionDriver == null) {
-			actionDriver = new ActionDriver(driver);
-			System.out.println("ActionDriver instance is created.");
-		}
+		/*
+		 * if (actionDriver == null) { actionDriver = new ActionDriver(driver);
+		 * System.out.println("ActionDriver instance is created."); }
+		 */
+//Initialize Actiondriver for the current Thread
+		actionDriver.set(new ActionDriver(getDriver()));
 
 	}
 
-	private void launchBrowser() {
+	// Synchronized method so that only one thread can use this method at a time.
+	private synchronized void launchBrowser() {
 		// Initialize the WebDriver based on browser defined in config.properties file
 		String browser = prop.getProperty("browser");
 
 		if (browser.equalsIgnoreCase("chrome")) {
-			driver = new ChromeDriver();
+			// driver = new ChromeDriver();
+			driver.set(new ChromeDriver()); // New changes as per Thread
 		} else if (browser.equalsIgnoreCase("firefox")) {
-			driver = new FirefoxDriver();
-		}
-
-		else if (browser.equalsIgnoreCase("edge")) {
-			driver = new EdgeDriver();
+			// driver = new FirefoxDriver();
+			driver.set(new FirefoxDriver()); // New changes as per Thread
+		} else if (browser.equalsIgnoreCase("edge")) {
+			// driver = new EdgeDriver();
+			driver.set(new EdgeDriver()); // New changes as per Thread
 		} else {
 			throw new IllegalArgumentException("Browser Not Supported:" + browser);
 		}
@@ -72,36 +80,38 @@ public class BaseClass {
 	public void configureBrowser() {
 		// Implicit Wait
 		int implicitWait = Integer.parseInt(prop.getProperty("implicitWait"));
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(implicitWait));
+		getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(implicitWait));
 
 		// Maximize the driver
-		driver.manage().window().maximize();
+		getDriver().manage().window().maximize();
 
 		// Navigate to URL
 		try {
-			driver.get(prop.getProperty("url"));
+			getDriver().get(prop.getProperty("url"));
 		} catch (Exception e) {
 			System.out.println("Failed to Navigate to the URL:" + e.getMessage());
 		}
 	}
 
 	@AfterMethod
-	public void tearDown() {
-		if (driver != null) {
+	//Synchronized method so that only one thread can use this method at a time. 
+	public synchronized void tearDown() {
+		if (getDriver() != null) {
 			try {
-				driver.quit();
+				getDriver().quit();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				System.out.println("Unable to Quit the Driver:" + e.getMessage());
 			}
 		}
 		System.out.println("Webdriver instance is closed.");
-		driver = null;
-		actionDriver = null;
+//		driver = null;
+//		actionDriver = null;
+		driver.remove();
+		actionDriver.remove();
 
 	}
 
-	
 //
 //	//Driver getter method
 //	public WebDriver getDriver() {
@@ -110,31 +120,31 @@ public class BaseClass {
 
 	// Getter Method for webdriver
 	public static WebDriver getDriver() {
-		if (driver == null) {
+		if (driver.get() == null) {
 			System.out.println("WebDriver is not initialized");
 			throw new IllegalStateException("WebDriver is not initialized");
 		}
-		return driver;
+		return driver.get();
 
 	}
 
 	// Getter Method for Actiondriver
 	public static ActionDriver getactionDriver() {
-		if (actionDriver == null) {
+		if (actionDriver.get() == null) {
 			System.out.println("ActionDriver is not initialized");
 			throw new IllegalStateException("ActionDriver is not initialized");
 		}
-		return actionDriver;
+		return actionDriver.get();
 
 	}
-	
+
 	// Getter method for prop
-		public static Properties getProp() {
-			return prop;
-		}
+	public static Properties getProp() {
+		return prop;
+	}
 
 	// Driver setter method
-	public void setDriver(WebDriver driver) {
+	public void setDriver(ThreadLocal<WebDriver> driver) {
 		this.driver = driver;
 
 	}
